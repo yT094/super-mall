@@ -166,7 +166,7 @@ trim_trailing_whitespace = true
 
 # 封装TabBar
 
-<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\doc\note.assets\image-20220430162550020.png" alt="image-20220430162550020" style="zoom:80%;" />
+<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\docs\images\image-20220430162550020.png" alt="image-20220430162550020" style="zoom:80%;" />
 
 ## 实现思路
 
@@ -266,7 +266,7 @@ navbar 使用 class 选择器，整个项目有多个地方使用。
 
 ## 导航栏布局
 
-<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\doc\note.assets\image-20220501091853765.png" alt="image-20220501091853765" style="zoom:80%;" />
+<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\docs\images\image-20220501091853765.png" alt="image-20220501091853765" style="zoom:80%;" />
 
 ```css
 <template>
@@ -303,7 +303,7 @@ text-align: center;
 
 # 封装network
 
-![image-20220501112806782](D:\_B.study\_B2.front-end\_01.mall\project\super-mall\doc\note.assets\image-20220501112806782.png)
+![image-20220501112806782](D:\_B.study\_B2.front-end\_01.mall\project\super-mall\docs\images\image-20220501112806782.png)
 
 ## 1.创建axios
 
@@ -413,7 +413,7 @@ data() {
 答案：如下所示
 ```
 
-<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\doc\note.assets\image-20220501112319805.png" alt="image-20220501112319805"  />
+<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\docs\images\image-20220501112319805.png" alt="image-20220501112319805"  />
 
 ```js
 问题：在 Home.vue 中，可以在created 中打印 this.result 吗？ 
@@ -644,7 +644,7 @@ request({
 回调函数的实质：将函数作为参数传入另一个函数。
 ````
 
-<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\doc\note.assets\image-20220316150729118.png" alt="image-20220316150729118" style="zoom: 67%;" />
+<img src="D:\_B.study\_B2.front-end\_01.mall\project\super-mall\docs\images\image-20220316150729118.png" alt="image-20220316150729118" style="zoom: 67%;" />
 
 #### 方案二：升级版回调函数
 
@@ -788,28 +788,4 @@ export function request(config) {
 ````
 
 # 封装
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
