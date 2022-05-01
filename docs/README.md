@@ -787,7 +787,38 @@ export function request(config) {
 }
 ````
 
-# 封装
+# 封装HomeSwiper
+
+## 父传子
+
+```js
+问题：如何将Home里的banners传给HomeSwiper（子组件）？
+
+答案如下：
+第一步：在 Home.vue 中绑定变量
+<home-swiper :banners="banners"></home-swiper>
+
+第二步：在 HomeSwiper.vue 中定义 props
+props: {
+    banners: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+      
+第三步：在 HomeSwiper.vue 中使用传给来的值
+<swiper>
+   <swiper-item v-for="item in banners" :key="item.id">
+     <a :href="item.link">
+       <img :src="item.image" alt="" />
+     </a>
+   </swiper-item>
+</swiper>
+```
+
+
 
 
 
