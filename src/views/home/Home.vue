@@ -7,11 +7,15 @@
 
     <!-- 轮播图 -->
     <home-swiper :banners="banners"></home-swiper>
+
+    <!-- 推荐 -->
+    <recommend-view :recommends="recommends"></recommend-view>
   </div>
 </template>
 
 <script>
 import HomeSwiper from "./childComps/HomeSwiper";
+import RecommendView from "./childComps/RecommendView";
 
 import NavBar from "components/common/navbar/NavBar";
 
@@ -22,6 +26,7 @@ export default {
   components: {
     NavBar,
     HomeSwiper,
+    RecommendView
   },
   data() {
     return {
