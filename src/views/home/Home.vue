@@ -13,10 +13,14 @@
     <feature-view />
 
     <!-- tab control -->
-    <tab-control class="tab-control" :titles="['流行', '新款', '精选']" />
+    <tab-control
+      class="tab-control"
+      :titles="['流行', '新款', '精选']"
+      @tabClick="onTabClick"
+    />
 
     <!-- 商品 -->
-    <goods-list :goods="goods['pop'].list" />
+    <goods-list :goods="showGoods" />
   </div>
 </template>
 
@@ -50,7 +54,13 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
+      currentType: "pop",
     };
+  },
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
   },
   created() {
     // 组件创建完成就发送网络请求
@@ -63,6 +73,30 @@ export default {
     this.getHomeGoods("sell");
   },
   methods: {
+    /**
+     * 事件监听相关的方法
+     */
+    onTabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = "pop";
+          break;
+        case 1:
+          this.currentType = "new";
+          break;
+
+        case 2:
+          this.currentType = "sell";
+          break;
+
+        default:
+          break;
+      }
+    },
+
+    /**
+     * 网络请求相关的方法
+     */
     getHomeMultidata() {
       getHomeMultidata().then((res) => {
         this.banners = res.data.banner.list;
