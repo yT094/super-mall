@@ -4,13 +4,15 @@
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
     <!-- 轮播图 -->
-    <home-swiper :banners="banners"></home-swiper>
+    <home-swiper :banners="banners" />
 
     <!-- 推荐 -->
-    <recommend-view :recommends="recommends"></recommend-view>
-
+    <recommend-view :recommends="recommends" />
     <!-- Feature -->
-    <feature-view></feature-view>
+    <feature-view />
+
+    <!-- tab control -->
+    <tab-control class="tab-control" :titles="['流行', '新款', '精选']" />
 
     <!-- 占位内容 -->
     <ul>
@@ -124,16 +126,18 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
 import NavBar from "components/common/navbar/NavBar";
+import TabControl from "components/content/TabControl/TabControl";
 
 import { getHomeMultidata } from "network/home";
 
 export default {
   name: "Home",
   components: {
-    NavBar,
     HomeSwiper,
     RecommendView,
     FeatureView,
+    NavBar,
+    TabControl,
   },
   data() {
     return {
@@ -162,6 +166,11 @@ export default {
 
     background-color: var(--color-tint);
     color: #fff;
+  }
+
+  .tab-control {
+    position: sticky;
+    top: 44px;
   }
 }
 </style>
