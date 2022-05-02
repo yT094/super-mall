@@ -837,5 +837,84 @@ props: {
 </template>
 ```
 
+## 数据模型
+
+```js
+goods: { 流行/新款/精选}
+goods: {
+  'pop': { page: 5, list: [150] },
+  'new': { page: 2, list: [60] },
+  'pop': { page: 1, list: [30] }
+}
+
+向数组里面塞数据
+getHomeGoods(type) {
+  const page = this.goods[type].page + 1;
+  getHomeGoods(type, page).then((res) => {
+    // 拿到 type 对应的数据
+    this.goods[type].list.push(...res.data.list)
+    // 页码加 1
+    this.goods[type].page += 1
+  });
+},
+```
+
+## 展示商品
+
+![image-20220502102215410](images/image-20220502102215410.png)
+
+## CSS样式
+
+### 多余的文字
+
+```css
+问题：多余的文字如何用 ... 显示？
+
+当有一行的内容
+overflow:hidden; //超出的文本隐藏
+text-overflow: ellipsis; //溢出用省略号显示
+white-space:nowrap; //溢出不换行
+
+当有两行的内容
+overflow: hidden;
+text-overflow: ellipsis;
+display:-webkit-box; //作为弹性伸缩盒子模型显示。
+-webkit-box-orient:vertical; //设置伸缩盒子的子元素排列方式--从上到下垂直排列
+-webkit-line-clamp:2; //显示的行
+```
+
+### flex布局
+
+![img](images/bg2015071010.png)
+
+```
+注意：space-around 两边空隙之和等于中间空隙
+```
+
+### 伪元素
+
+![image-20220502120846758](images/image-20220502120846758.png)
+
+```css
+收藏图标制作：
+<span class="collect">{{ goodsItem.cfav }}</span>
+.collect {
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    left: -15px;
+    top: -1px;
+    width: 14px;
+    height: 14px;
+    background: url("~assets/img/common/collect.svg") 0 0/14px 14px;
+  }
+}
+```
+
+
+
+
+
 
 
