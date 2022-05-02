@@ -818,7 +818,24 @@ props: {
 </swiper>
 ```
 
+# 封装TabControl
 
+## slot
+
+![image-20220502081543220](images/image-20220502081543220.png)
+
+```js
+问题：这个地方是否使用slot？
+答案：不需要。此处仅文字和个数可能不同，无需使用slot
+
+<template>
+  <div class="tab-control">
+    <div class="tab-control-item" v-for="item in titles" :key="item.id">
+      <span>{{ item }}</span>
+    </div>
+  </div>
+</template>
+```
 
 
 
