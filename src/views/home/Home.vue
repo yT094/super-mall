@@ -1,26 +1,31 @@
 <template>
-  <div id="home">
+  <div id="home" class="wrapper">
     <!-- 导航栏 -->
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
-    <!-- 轮播图 -->
-    <home-swiper :banners="banners" />
+    <!-- 滚动区域 -->
+    <scroll class="content" ref="scroll" :probe-type="1">
+      <!-- 轮播图 -->
+      <home-swiper :banners="banners" />
 
-    <!-- 推荐 -->
-    <recommend-view :recommends="recommends" />
+      <!-- 推荐 -->
+      <recommend-view :recommends="recommends" />
 
-    <!-- Feature -->
-    <feature-view />
+      <!-- tab control -->
+      <tab-control
+        class="tab-control"
+        :titles="['流行', '新款', '精选']"
+        @tabClick="onTabClick"
+      />
 
-    <!-- tab control -->
-    <tab-control
-      class="tab-control"
-      :titles="['流行', '新款', '精选']"
-      @tabClick="onTabClick"
-    />
+      <!-- Feature -->
+      <feature-view />
 
-    <!-- 商品 -->
-    <goods-list :goods="showGoods" />
+      <!-- 商品 -->
+      <goods-list :goods="showGoods" />
+    </scroll>
+
+    <back-top @click.native="onBackClick"></back-top>
   </div>
 </template>
 
@@ -32,6 +37,8 @@ import FeatureView from "./childComps/FeatureView";
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
+import Scroll from "components/common/scroll/Scroll";
+import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -44,6 +51,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    Scroll,
+    BackTop,
   },
   data() {
     return {
@@ -94,6 +103,11 @@ export default {
       }
     },
 
+    onBackClick() {
+      console.log("被点击了");
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+
     /**
      * 网络请求相关的方法
      */
@@ -118,7 +132,9 @@ export default {
 
 <style lang="less" scoped>
 #home {
+  position: relative;
   padding-top: 44px;
+  height: 100vh;
   .home-nav {
     position: fixed;
     top: 0;
@@ -134,6 +150,14 @@ export default {
     position: sticky;
     top: 44px;
     z-index: 9;
+  }
+
+  .content {
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 }
 </style>
