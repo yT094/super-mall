@@ -1005,4 +1005,18 @@ ref如果是绑定在普通的元素中，那么通过this.$refs.refname获取�
 <back-top @click.native="backClick" />
 ```
 
- 
+##  bugs
+
+```css
+"itemImageLoad": "TypeError: _this.$refs.scroll.refresh is not a function"
+
+(found in <Root>)
+
+报错原因：没有在 Scroll.vue 中定义 refresh 这个方法
+
+解决bug：
+refresh() {
+  this.scroll && this.scroll.refresh();
+},
+```
+
