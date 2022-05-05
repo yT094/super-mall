@@ -164,6 +164,65 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 ```
 
+## bug修复
+
+### Error: Cannot find module 'semver'
+
+```js
+PS D:\_B.study\_B2.front-end\_01.mall\project\super-mall> npm run serve
+
+> super-mall@0.1.0 serve
+> vue-cli-service serve
+
+node:internal/modules/cjs/loader:936
+  throw err;
+  ^
+
+Error: Cannot find module 'semver'
+Require stack:
+- D:\_B.study\_B2.front-end\_01.mall\project\super-mall\node_modules\@vue\cli-service\bin\vue-cli-service.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (D:\_B.study\_B2.front-end\_01.mall\project\super-mall\node_modules\@vue\cli-service\bin\vue-cli-service.js:3:16)
+    at Module._compile (node:internal/modules/cjs/loader:1103:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1155:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'D:\\_B.study\\_B2.front-end\\_01.mall\\project\\super-mall\\node_modules\\@vue\\cli-service\\bin\\vue-cli-service.js'     
+  ]
+}
+
+修复bug
+I followed These steps and it solved my issue
+
+1.uninstall Node.js
+2.Remove the content of the following folders
+    C:\Users<user-name>\AppData\Roaming\npm-cache
+    C:\Users<user-name>\AppData\Roaming\npm
+    C:\Program Files\nodejs
+    工程中的 node_modules 包
+3.Then again install Node https://nodejs.org/en/
+```
+
+### 无法将“npm”项识别为 cmdlet
+
+```
+npm : 无法将“npm”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括 路径，请确保路径正确，然后再试一次。 
+
+方法一：以管理员身份运行
+右击vscode，选择一管理员身份运行，即可解决问题。
+
+————————————————
+参考链接：https://blog.51cto.com/u_15127543/4448732
+```
+
+
+
 # 封装TabBar
 
 <img src="\images\image-20220430162550020.png" alt="image-20220430162550020" style="zoom:80%;" />
@@ -912,9 +971,38 @@ display:-webkit-box; //作为弹性伸缩盒子模型显示。
 }
 ```
 
+# 封装BScroll组件
+
+## 获取wrapper
+
+```js
+不建议使用：
+document.querySelector('.wrapper')
+
+理由：
+当其他页面也定义了 class="wrapper" 时，此时拿到的 wrapper 是不明确的。
+
+推荐使用：ref
+ref如果是绑定在组件中的，那么通过this.$refs.refname获取到的是一个组件对象
+ref如果是绑定在普通的元素中，那么通过this.$refs.refname获取到的是一个元素对象
+```
+
+## 计算滚动高度
+
+![image-20220503081615500](images/image-20220503081615500.png)
 
 
 
+## 监听点击
+
+```js
+原生元素可以直接使用 @click
+<div @click="itemClick"></div>
+<button @click="btnClick"></button>
 
 
+组件需使用 @click.native
+<back-top @click.native="backClick" />
+```
 
+ 
