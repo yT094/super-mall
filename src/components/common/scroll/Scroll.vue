@@ -27,6 +27,9 @@ export default {
     scrollTo(x, y, time = 300) {
       this.scroll && this.scroll.scrollTo(x, y, time);
     },
+    refresh() {
+      this.scroll && this.scroll.refresh();
+    },
   },
   mounted() {
     // 1.创建 BScroll 对象
@@ -37,10 +40,10 @@ export default {
     });
 
     // 2.监听滚动的位置
-    this.scroll.on("scroll", (position) => {
-      console.log(this.probeType);
-      console.log(position);
-    });
+    // this.scroll.on("scroll", (position) => {
+    //   console.log(this.probeType);
+    //   console.log(position);
+    // });
   },
 };
 </script>

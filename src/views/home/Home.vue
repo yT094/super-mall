@@ -4,7 +4,7 @@
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
     <!-- 滚动区域 -->
-    <scroll class="content" ref="scroll" :probe-type="1">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="onContentScroll">
       <!-- 轮播图 -->
       <home-swiper :banners="banners" />
 
@@ -25,7 +25,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <back-top @click.native="onBackClick"></back-top>
+    <back-top @click.native="onBackClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -64,6 +64,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      isShowBackTop: false
     };
   },
   computed: {
@@ -80,6 +81,11 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+
+    // 3.监听item中图片加载完成
+    this.$bus.$on('itemImageLoad', () => {
+      this.$refs.scroll.refresh()
+    })
   },
   methods: {
     /**
@@ -104,8 +110,11 @@ export default {
     },
 
     onBackClick() {
-      console.log("被点击了");
       this.$refs.scroll.scrollTo(0, 0);
+    },
+    onContentScroll(position) {
+      const positionY = - position.y
+      this.isShowBackTop = (positionY) > 1000
     },
 
     /**
