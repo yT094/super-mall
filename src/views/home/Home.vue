@@ -91,9 +91,10 @@ export default {
   },
   mounted() {
     // 3.监听item中图片加载完成
+    const refresh = this.debounce(this.$refs.scroll.refresh)
     this.$bus.$on("itemImageLoad", () => {
       // better-scroll 重新计算高度
-      this.$refs.scroll.refresh();
+      refresh()
     });
   },
   methods: {
@@ -133,6 +134,18 @@ export default {
     onLoadMore() {
       this.getHomeGoods(this.currentType);
     },
+
+    // 防抖操作
+    debounce(func, delay=300) {
+      let timer = null;
+      return function (...args) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      };
+    },
+
     /**
      * 网络请求相关的方法
      */
