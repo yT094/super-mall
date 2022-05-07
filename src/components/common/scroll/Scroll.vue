@@ -34,6 +34,9 @@ export default {
     refresh() {
       this.scroll && this.scroll.refresh();
     },
+    finishPullUp() {
+      this.scroll && this.scroll.finishPullUp();
+    }
   },
   mounted() {
     // 1.创建 BScroll 对象

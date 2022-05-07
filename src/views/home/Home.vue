@@ -88,9 +88,11 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
-
+  },
+  mounted() {
     // 3.监听item中图片加载完成
     this.$bus.$on("itemImageLoad", () => {
+      // better-scroll 重新计算高度
       this.$refs.scroll.refresh();
     });
   },
@@ -147,6 +149,8 @@ export default {
         this.goods[type].list.push(...res.data.list);
         // 页码加 1
         this.goods[type].page += 1;
+        // 完成上拉加载更多
+        this.$refs.scroll.finishPullUp();
       });
     },
   },
