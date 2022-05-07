@@ -1005,7 +1005,7 @@ ref如果是绑定在普通的元素中，那么通过this.$refs.refname获取�
 <back-top @click.native="backClick" />
 ```
 
-##  bugs
+##  bug：TypeError
 
 ```css
 "itemImageLoad": "TypeError: _this.$refs.scroll.refresh is not a function"
@@ -1018,5 +1018,145 @@ ref如果是绑定在普通的元素中，那么通过this.$refs.refname获取�
 refresh() {
   this.scroll && this.scroll.refresh();
 },
+```
+
+## bug：滚动bug
+
+### bug分析
+
+    Better-Scroll 在决定有多少区域滚动时，根据 scrollerHeight 属性决定
+    - scrollerHeight属性是根据放 Better-Scroll 的 content 中的子组件的高度
+    - 但是我们的首页中, 刚开始在计算 scrollerHeight属性时, 是没有将图片计算在内的
+    - 所以, 计算出来的告诉是错误的(1300+)
+    - 后来图片加载进来之后有了新的高度, 但是scrollerHeight属性并没有进行更新.
+    - 所以滚动出现了问题
+
+### 解决bug
+
+```css
+- 监听每一张图片是否加载完成, 只要有一张图片加载完成了, 执行一次refresh()
+- 如何监听图片加载完成了?
+- 原生的js监听图片: img.onload = function() {}
+- Vue中监听: @load='imageLoad'
+- 调用scroll的refresh()
+```
+
+### 数据传递
+
+```
+如何将 GoodsListItem.vue 中的事件传入到 Home.vue 中？
+```
+
+
+
+    1. 因为涉及到非父子组件的通信， 所以这里我们选择了事件总线
+
+```
+bus ->总线
+
+第一步：在原型链上注册 $bus
+Vue.prototype.$bus = new Vue()
+
+第二步：发出事件
+this.$bus.$emit('事件名称', 参数) 
+
+第三步：监听事件
+this.$bus.$on('事件名称', 回调函数(参数))
+```
+
+2.在GIS开发中：
+
+```js
+this.$root.$emit('show-area', this.form.coordinate);
+
+this.$root.$on('show-area', this.showarea);
+
+this.$root.$off('show-area', this.showarea);
+```
+
+其他方法：
+
+1.vuex 状态管理器
+
+2.`GoodListItem` 传给 `GoodList`，再传给 `Home.vue`
+
+
+
+### 方案选择
+
+```
+如何在 GoodListItem 中拿到 this.scroll.refresh ?
+```
+
+#### 方案一：逐级上报
+
+可以通过 Home.vue 拿，this.$refs.scroll.scroll.refresh 此时，可在 GoodsListItem 中，将事件发送给 GoodsList，然后 GoodsList 将事件发给 Home.vue ，一级一级地往上报
+
+![image-20220303133540312](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\方案一)
+
+#### 方案二：vuex
+
+```
+搞一个 vuex 对象，让 vuex 做一个中间的通信
+```
+
+![image-20220303133926363](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\方案二)
+
+#### 方案三：事件总线
+
+![image-20220303134046722](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\方南三)
+
+
+
+步骤一：发送一个 itemImageLoad 事件
+
+![image-20220303134202422](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\步骤一)
+
+步骤二：Home.vue 中监听事件
+
+![image-20220303135152086](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\步骤二)
+
+
+
+步骤三：vue 实例做数据总线
+
+![image-20220303134907597](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\步骤三)
+
+注意：Scroll.vue 的一个方法
+
+![image-20220303135401173](D:\_B.study\_B1.ycs\frontEnd\_02Project\blog\scroll滚动bug\步骤四)
+
+## bug：TypeError 
+
+```js
+TypeError：cannot read property 'refresh' of undefined
+
+报错原因一：调用该方法时，scroll对象还没有生成。
+refresh() {
+  this.scroll.refresh();
+},
+  
+解决bug，提高代码的健壮性
+refresh() {
+  this.scroll && this.scroll.refresh();
+},
+    
+报错原因二：this.$refs 放在了created中
+created() {
+  // 3.监听item中图片加载完成
+  this.$bus.$on("itemImageLoad", () => {
+  // better-scroll 重新计算高度
+  this.$refs.scroll.refresh();
+ });
+},
+
+解决bug：将其放在mounted中，此时DOM已经挂载完成
+mounted() {
+  // 3.监听item中图片加载完成
+  this.$bus.$on("itemImageLoad", () => {
+  // better-scroll 重新计算高度
+  this.$refs.scroll.refresh();
+ });
+},    
 ```
 
