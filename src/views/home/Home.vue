@@ -3,6 +3,15 @@
     <!-- 导航栏 -->
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
+    <!-- tab control -->
+    <tab-control
+      :titles="['流行', '新款', '精选']"
+      @tabClick="onTabClick"
+      class="tab-control"
+      ref="tabControl1"
+      v-show="isTabFixed"
+    />
+
     <!-- 滚动区域 -->
     <scroll
       class="content"
@@ -19,14 +28,13 @@
       <recommend-view :recommends="recommends" />
 
       <!-- Feature -->
-      <feature-view />      
+      <feature-view />
 
       <!-- tab control -->
       <tab-control
         :titles="['流行', '新款', '精选']"
         @tabClick="onTabClick"
-        ref="tabControl"
-        :class="{fixed: isTabFixed}"
+        ref="tabControl2"
       />
 
       <!-- 商品 -->
@@ -74,7 +82,7 @@ export default {
       currentType: "pop",
       isShowBackTop: false,
       tabOffsetTop: 0,
-      isTabFixed: false
+      isTabFixed: false,
     };
   },
   computed: {
@@ -120,6 +128,8 @@ export default {
         default:
           break;
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
 
     // 监听点击回到顶部事件
@@ -134,7 +144,7 @@ export default {
       this.isShowBackTop = positionY > 1000;
 
       // 2.决定tabControl是否吸顶（设置position: fixed）
-      this.isTabFixed = positionY > this.tabOffsetTop
+      this.isTabFixed = positionY > this.tabOffsetTop;
     },
 
     // 监听加载更多事件
@@ -145,8 +155,7 @@ export default {
     // 监听轮播图图片加载完成
     swiperImageLoad() {
       // 获取tabControl的offsetTop
-      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
-      console.log(this.$refs.tabControl.$el.offsetTop);
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
 
     // 防抖操作
@@ -200,19 +209,18 @@ export default {
     color: #fff;
   }
 
+  // 改变层级，设置相对定位即可
+  .tab-control {
+    position: relative;
+    z-index: 9;
+  }
+
   .content {
     position: absolute;
     top: 44px;
     bottom: 49px;
     left: 0;
     right: 0;
-
-    .fixed {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 44px;
-    }
   }
 }
 </style>
