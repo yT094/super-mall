@@ -13,20 +13,21 @@
       @pullingUp="onLoadMore"
     >
       <!-- 轮播图 -->
-      <home-swiper :banners="banners" />
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
 
       <!-- 推荐 -->
       <recommend-view :recommends="recommends" />
 
+      <!-- Feature -->
+      <feature-view />      
+
       <!-- tab control -->
       <tab-control
-        class="tab-control"
         :titles="['流行', '新款', '精选']"
         @tabClick="onTabClick"
+        ref="tabControl"
+        :class="{fixed: isTabFixed}"
       />
-
-      <!-- Feature -->
-      <feature-view />
 
       <!-- 商品 -->
       <goods-list :goods="showGoods" />
@@ -72,6 +73,8 @@ export default {
       },
       currentType: "pop",
       isShowBackTop: false,
+      tabOffsetTop: 0,
+      isTabFixed: false
     };
   },
   computed: {
@@ -90,11 +93,11 @@ export default {
     this.getHomeGoods("sell");
   },
   mounted() {
-    // 3.监听item中图片加载完成
-    const refresh = this.debounce(this.$refs.scroll.refresh)
+    // 1.监听item中图片加载完成
+    const refresh = this.debounce(this.$refs.scroll.refresh);
     this.$bus.$on("itemImageLoad", () => {
       // better-scroll 重新计算高度
-      refresh()
+      refresh();
     });
   },
   methods: {
@@ -126,8 +129,12 @@ export default {
 
     // 监听内容滚动的位置
     onContentScroll(position) {
+      // 1.决定 BackTop 是否显示
       const positionY = -position.y;
       this.isShowBackTop = positionY > 1000;
+
+      // 2.决定tabControl是否吸顶（设置position: fixed）
+      this.isTabFixed = positionY > this.tabOffsetTop
     },
 
     // 监听加载更多事件
@@ -135,8 +142,15 @@ export default {
       this.getHomeGoods(this.currentType);
     },
 
+    // 监听轮播图图片加载完成
+    swiperImageLoad() {
+      // 获取tabControl的offsetTop
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+      console.log(this.$refs.tabControl.$el.offsetTop);
+    },
+
     // 防抖操作
-    debounce(func, delay=300) {
+    debounce(func, delay = 300) {
       let timer = null;
       return function (...args) {
         if (timer) clearTimeout(timer);
@@ -186,18 +200,19 @@ export default {
     color: #fff;
   }
 
-  .tab-control {
-    position: sticky;
-    top: 44px;
-    z-index: 9;
-  }
-
   .content {
     position: absolute;
     top: 44px;
     bottom: 49px;
     left: 0;
     right: 0;
+
+    .fixed {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 44px;
+    }
   }
 }
 </style>
