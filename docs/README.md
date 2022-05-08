@@ -1239,3 +1239,139 @@ console.log('cccc');
 说明：这里和事件循环有关，虽然没有给具体的延迟时间，但是会将延迟函数放到事件尾部
 ```
 
+# tabControl的吸顶效果
+
+## 为什么吸顶效果不再存在？
+
+```css
+.tab-control {
+  position: sticky;
+  top: 44px;
+  z-index: 9;
+}
+原因：使用了better-scroll组件，而非原生滚动。
+```
+
+## 解决方案
+
+### 方案一：比较offsetTop与positionY值
+
+#### 获取offsetTop值
+
+```js
+1.this.tabOffsetTOP = this.$refs.tabControl.$el.offsetTop; 
+
+$el是拿到组件的元素；
+offsetTop是拿到当前对象到其上级层顶部的距离.
+
+bug：
+获取另外两个值没问题，为什么获取 offsetTop 就是0？
+console.log(this.$refs.tabControl.$el.offsetTop);
+console.log(this.$refs.tabControl.$el.offsetHeight);
+console.log(this.$refs.tabControl.$el.offsetWidth);
+```
+
+```
+1）拿到 offsetTop 之前，最好等上边的元素加载完，如在 mounted 中获取就是错的，因为没有等轮播图加载完成
+2）想要获取正确的值，要等轮播图加载完成
+
+实现：
+监听 HomeSwiper.vue中图片的加载，一旦加载完成后，将事件发送给父组件 Home.vue
+```
+
+```js
+状态记录器：虽然有四张轮播图，其实获取第一张轮播图后，就知道其高度了
+data() {
+    return {
+      isLoad: false,
+    };
+  },
+
+methods: {
+    imageLoad() {
+      if (!this.isLoad) {
+        this.$emit("swiperImageLoad");
+        this.isLoad = true;
+      }
+    },
+  },
+      
+注意：这里无需使用debounce，假如以输入 iPhone 为例
+这里的需求是：当检测到输入i以后，Phone就不再发出事件
+```
+
+#### 比较二者的值
+
+```js
+this.isTabFixed = positionY > this.tabOffsetTop
+```
+
+#### 有什么不足？
+
+```
+第一：tabControl 被隐藏了
+第二：GoodListItems 会往上顶一下
+```
+
+![demo1](images/tab-control-bug.gif)
+
+```
+第一：tabControl 被隐藏了
+
+原因：better-scroll内部实现导致的。transform: translate(10px, 10px);
+（该变换由二维向量构成。它的坐标定义了元素在每个方向上移动了多少）
+此时tabControl随content一起移动到顶部了。
+
+第二：GoodListItems 会往上顶一下
+
+原因：tabControl 被设置了 position: fixed; 导致脱标，下面的内容就顶上去了。
+```
+
+### 方案二：复制一份占位
+
+![demo1](images/tab-control-bug-solved.gif)
+
+```js
+// 占位：isTabFixed 为true的时候才显示
+<tab-control
+  :titles="['流行', '新款', '精选']"
+  @tabClick="onTabClick"
+  class="tab-control"
+  v-show="isTabFixed"
+/>
+
+// 
+<tab-control
+  :titles="['流行', '新款', '精选']"
+  @tabClick="onTabClick"
+  ref="tabControl"
+/>
+
+代码理解：
+onContentScroll(position) {
+  const positionY = -position.y;
+
+  // 2.决定tabControl是否吸顶（设置position: fixed）
+  this.isTabFixed = positionY > this.tabOffsetTop;
+}
+解释：当向下滚动时，positionY 会不断变大，当 positionY>550 时，
+需要显示tabControl（this.tabOffsetTop 假定为 550）
+```
+
+### 一个小问题
+
+```
+bug复现：点击tabControl后，和商品对应不上
+```
+
+![tab-control-currentIndex-bug (1)](images/tab-control-currentIndex-bug (1).gif)
+
+```js
+解决办法：每次点击后，都更新两个tabControl的currentIndex
+onTabClick(index) {
+  this.$refs.tabControl1.currentIndex = index;
+  this.$refs.tabControl2.currentIndex = index;
+},
+```
+
+![tab-control-currentIndex-bug-solved (1)](images/tab-control-currentIndex-bug-solved (1).gif)
