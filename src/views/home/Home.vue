@@ -83,6 +83,7 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
+      saveY: 0,
     };
   },
   computed: {
@@ -107,6 +108,16 @@ export default {
       // better-scroll 重新计算高度
       refresh();
     });
+  },
+  activated() {
+    // 回来时，跳转到之前的位置
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
+    // 有时候跳转回来后，会自主地滚到到顶部，加个refresh就可以了
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    // 离开时，记录当前的位置
+    this.saveY = this.$refs.scroll.getScrollY();
   },
   methods: {
     /**
