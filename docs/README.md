@@ -1375,3 +1375,33 @@ onTabClick(index) {
 ```
 
 ![tab-control-currentIndex-bug-solved (1)](images/tab-control-currentIndex-bug-solved (1).gif)
+
+# 让Home保持原来的状态
+
+## 让Home不要随意销毁掉
+
+```js
+<keep-alive>
+  <router-view></router-view>
+</keep-alive>
+```
+
+## 让Home中的内容保持原来的位置
+
+```
+离开时，保存一个位置信息saveY
+回来时，将位置设置为原来保存的位置saveY即可
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
