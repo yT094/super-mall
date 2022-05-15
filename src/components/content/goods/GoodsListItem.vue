@@ -1,6 +1,14 @@
+<!--
+ * @Author: ycs 1748780248@qq.com
+ * @Date: 2022-05-02 09:51:14
+ * @LastEditors: ycs 1748780248@qq.com
+ * @LastEditTime: 2022-05-14 21:16:08
+ * @FilePath: \super-mall\src\components\content\goods\GoodsListItem.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
-  <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+  <div class="goods-item" @click="onItemClick">
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -21,10 +29,15 @@ export default {
     },
   },
   methods: {
+    // 图片加载完成事件
     imageLoad() {
-      this.$bus.$emit("itemImageLoad")
-    }
-  }
+      this.$bus.$emit("itemImageLoad");
+    },
+    // 监听GoodsItem的点击
+    onItemClick() {
+      this.$router.push("/detail/" + this.goodsItem.iid);
+    },
+  },
 };
 </script>
 
