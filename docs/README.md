@@ -1480,7 +1480,42 @@ onItemClick(index) {
 }
 ```
 
+# 封装DetailSwiper
+
+## bug1: 轮播图不能很好地显示
 
 
 
+![detail-swiper-bug](images/detail-swiper-bug.gif)
+
+### bug解决
+
+```css
+对swiper一个高度，并溢出隐藏
+
+.swiper {
+  height: 300px;
+  overflow: hidden;
+}
+```
+
+## 问题1：二者命名有什么区别
+
+```js
+<detail-swiper :topImages="topImages" />
+<detail-swiper :top-images="topImages" />  
+```
+
+## bug2: iid不是最新的？
+
+```
+每次从首页跳转到详情页，iid都不是最新的？
+因为keep-alive的缘故
+```
+
+### bug解决
+
+```
+
+```
 
