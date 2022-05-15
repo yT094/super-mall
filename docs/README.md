@@ -1393,13 +1393,92 @@ onTabClick(index) {
 回来时，将位置设置为原来保存的位置saveY即可
 ```
 
+# 路由传参
+
+## 方式一：动态路由
+
+```js
+第一步：路由设置
+{
+  path: "/detail/:iid",
+  component: Detail,
+},
+    
+第二步：传出参数
+// 监听GoodsItem的点击
+onItemClick() {
+  this.$router.push("/detail/" + this.goodsItem.iid);
+},
+    
+第三步：接收参数
+<script>
+export default {
+  name: "Detail",
+  data() {
+    return {
+      iid: null,
+    };
+  },
+  created() {
+    this.iid = this.$route.params.iid;
+    console.log("Detail", this.iid);
+  },
+};
+</script>
+```
 
 
 
+# 封装DetailNavBar
 
+## 引用NavBar
 
+```js
+<nav-bar class="detail-nav">
+  <div slot="left"></div>
+  <div slot="center" class="v-center">
+    <div class="r-item" v-for="item in titles" :key="item.id">
+      {{ item }}
+    </div>
+  </div>
+</nav-bar>
 
+注意：使用插槽的时候，若要遍历数组，应再添加一个div
+```
 
+## 动态class绑定
+
+```js
+第一步：动态class
+<div slot="center" class="v-center">
+<div
+  class="r-item"
+  v-for="(item, index) in titles"
+  :key="item.index"
+  :class="{ active: index === currentIndex }"
+  @click="onItemClick(index)"
+>
+  {{ item }}
+</div>
+
+第二步：添加状态
+data() {
+    return {
+      currentIndex: 0,
+    };
+  },
+ 
+第三步：更改状态
+// 监听item的点击
+onItemClick(index) {
+  this.currentIndex = index;
+},
+    
+第四步：添加class
+.active {
+  color: var(--color-high-text);
+}
+```
 
 
 

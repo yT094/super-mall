@@ -2,15 +2,18 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-05-14 21:25:07
+ * @LastEditTime: 2022-05-15 08:57:15
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
-  <div>详情页面 {{ iid }}</div>
+  <div id="detail">
+    <detail-nav-bar></detail-nav-bar>
+  </div>
 </template>
 
 <script>
+import DetailNavBar from "./childComps/DetailNavBar";
 export default {
   name: "Detail",
   data() {
@@ -19,11 +22,10 @@ export default {
     };
   },
   created() {
-    console.log("Detail");
     this.iid = this.$route.params.iid;
-    console.log(this.iid);
+    console.log("Detail", this.iid);
   },
-  components: {},
+  components: { DetailNavBar },
 };
 </script>
 
