@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-05-15 11:29:14
+ * @LastEditTime: 2022-05-15 18:13:35
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -10,22 +10,86 @@
   <div id="detail">
     <detail-nav-bar></detail-nav-bar>
     <detail-swiper :topImages="topImages" />
+    <detail-base-info :goods="goods" />
+    <detail-shop-info :shop="shop" />
+    <ul>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
   </div>
 </template>
 
 <script>
 import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
+import DetailBaseInfo from "./childComps/DetailBaseInfo";
+import DetailShopInfo from "./childComps/DetailShopInfo";
 
 import { getDetailData } from "network/detail";
+import { Goods, Shop } from "../../network/detail";
 
 export default {
   name: "Detail",
-  components: { DetailNavBar, DetailSwiper },
+  components: {
+    DetailNavBar,
+    DetailSwiper,
+    DetailBaseInfo,
+    DetailShopInfo,
+  },
   data() {
     return {
       iid: null,
       topImages: [],
+      goods: {},
+      shop: {},
     };
   },
   created() {
@@ -41,7 +105,18 @@ export default {
         const data = res.result;
         // 1.获取顶部轮播图的数据
         this.topImages = data.itemInfo.topImages;
-        console.log(this.topImages.length);
+        console.log("data:", data);
+
+        // 2.获取商品信息
+        this.goods = new Goods(
+          data.itemInfo,
+          data.columns,
+          data.shopInfo.services
+        );
+        // console.log("Goods:", this.goods);
+
+        // 3.获取店铺信息
+        this.shop = new Shop(data.shopInfo);
       });
     },
   },

@@ -1515,7 +1515,162 @@ onItemClick(index) {
 
 ### bug解决
 
+```js
+<keep-alive exclude="Detail">
+  <router-view></router-view>
+</keep-alive>
 ```
 
+# 封装DetailBaseInfo
+
+## 整合数据
+
+### 场景设置
+
 ```
+将这三个地方的数据整合为一个对象，然后传给另外一个对象进行显示，这里充分体现面向对象的思想
+```
+
+![image-20220515113805182](images/image-20220515113805182.png)
+
+### 数据封装过程
+
+```js
+第一步：封装一个类
+export class Goods {
+  constructor(itemInfo, columns, services) {
+    this.title = itemInfo.title;
+    this.desc = itemInfo.desc;
+    this.newPrice = itemInfo.price;
+    this.oldPrice = itemInfo.oldPrice;
+    this.discount = itemInfo.discountDesc;
+    this.realPrice = itemInfo.lowNowPrice;
+    this.columns = columns;
+    this.services = services;
+  }
+}
+
+第二步：使用类
+this.goods = new Goods(
+  data.itemInfo,
+  data.columns,
+  data.shopInfo.services
+);
+
+第三步：查看结果
+```
+
+![image-20220515120852777](images/image-20220515120852777.png)
+
+```
+总结：此处充分体现了面向对象的思想。
+将三种数据抽成一个类，当new一个实例时，传入三个参数即可得到对应的属性。
+当别人在用的时候，面对的是 goods 这一个对象，而不是三种数据。
+```
+
+## 代码健壮性
+
+```js
+<template>
+  <div v-if="Object.keys(goods).length !== 0" class="base-info">
+  </div>
+</template>
+
+注意：如果对象为空，就不渲染。
+
+判断一个对象是否为空：
+const Obj = {}
+Object.keys(Obj).length === 0
+当keys值为0时，该对象为空
+```
+
+## bug: 不能转换
+
+### bug描述
+
+```js
+Error in render: "TypeError: Cannot convert undefined or null to object"
+found in
+---> <DetailBaseInfo> at src/views/detail/childComps/DetailBaseInfo.vue
+```
+
+### bug解决
+
+```js
+父组件 Detail.vue 在定义 goods 时，默认给的是 null
+
+// Detail.vue
+data() {
+    return {
+      iid: null,
+      topImages: [],
+      goods: null,
+    };
+  },
+      
+// Detail.vue 修改后
+data() {
+    return {
+      iid: null,
+      topImages: [],
+      goods: {},
+    };
+  },      
+```
+
+# 封装DetailShopInfo
+
+## 原型图
+
+![image-20220515170652357](images/image-20220515170652357.png)
+
+```css
+1.如何让文字位于图片的中部？
+#shop-info {
+  padding: 25px 8px;
+  border-bottom: 5px solid #f2f5f8;
+  .shop-top {
+    display: flex;
+    align-items: center;
+    img {
+      width: 45px;
+      height: 45px;
+    }
+  }
+}
+```
+
+![image-20220515173458520](images/image-20220515173458520.png)
+
+```css
+2.方形图片变为圆形图片？
+img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+```
+
+![image-20220515174132081](images/image-20220515174132081.png)
+
+```js
+3.超过一万，如何显示？
+搞一个filter即可
+<div class="sells-count">
+  {{ shop.sells | sellCountFilter }}
+</div>
+
+filters: {
+    sellCountFilter: function (value) {
+      if (value < 10000) return value;
+      return (value / 10000).toFixed(1) + "万";
+    },
+  },
+      
+4.小竖线怎么做？
+搞一个border-right即可
+border-right: 1px solid rgba(0, 0, 0, 0.1);
+```
+
+![image-20220515202531673](images/image-20220515202531673.png)
 
