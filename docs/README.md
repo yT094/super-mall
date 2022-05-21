@@ -1674,3 +1674,34 @@ border-right: 1px solid rgba(0, 0, 0, 0.1);
 
 ![image-20220515202531673](images/image-20220515202531673.png)
 
+# 封装DetailGoodsInfo
+
+## 描述信息展示
+
+![image-20220521143727660](images/image-20220521143727660.png)
+
+```css
+// 小横线
+width: 90px;
+height: 1px;
+background-color: #a3a3a5;
+
+// 小黑点——伪元素
+.c-start,
+.c-end {
+  position: relative;
+  width: 90px;
+  height: 1px;
+  background-color: #a3a3a5;
+
+  &:before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background-color: #333;
+    bottom: 0;
+  }
+}
+```
+

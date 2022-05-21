@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-05-15 18:13:35
+ * @LastEditTime: 2022-05-21 14:26:20
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -12,6 +12,7 @@
     <detail-swiper :topImages="topImages" />
     <detail-base-info :goods="goods" />
     <detail-shop-info :shop="shop" />
+    <detail-goods-info :goods-info="goodsInfo" />
     <ul>
       <li></li>
       <li></li>
@@ -72,6 +73,7 @@ import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
+import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 
 import { getDetailData } from "network/detail";
 import { Goods, Shop } from "../../network/detail";
@@ -83,6 +85,7 @@ export default {
     DetailSwiper,
     DetailBaseInfo,
     DetailShopInfo,
+    DetailGoodsInfo,
   },
   data() {
     return {
@@ -90,6 +93,7 @@ export default {
       topImages: [],
       goods: {},
       shop: {},
+      goodsInfo: {},
     };
   },
   created() {
@@ -117,6 +121,10 @@ export default {
 
         // 3.获取店铺信息
         this.shop = new Shop(data.shopInfo);
+
+        // 4.获取商品的详细信息
+        this.goodsInfo = data.detailInfo;
+        console.log("goodsInfo:", this.goodsInfo);
       });
     },
   },
