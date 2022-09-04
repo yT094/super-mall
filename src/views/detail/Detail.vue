@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-04 12:24:52
+ * @LastEditTime: 2022-09-04 16:43:52
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -38,6 +38,7 @@ import Scroll from "components/common/scroll/Scroll";
 
 import { getDetailData, getRecommend } from "network/detail";
 import { Goods, GoodsParam, Shop } from "../../network/detail";
+import { itemListenerMixin } from "@/common/mixin";
 
 export default {
   name: "Detail",
@@ -77,7 +78,7 @@ export default {
       deep: true,
     },
   },
-
+  mixins: [itemListenerMixin],
   created() {
     // 1.拿到商品的iid
     this.iid = this.$route.params.iid;
@@ -87,6 +88,10 @@ export default {
 
     // 3.获取推荐数据
     this.getRecommend();
+  },
+  destroyed() {
+    // 取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   methods: {
     // 获取DetailData
@@ -129,17 +134,6 @@ export default {
       getRecommend().then((res) => {
         this.recommends = res.data.list;
       });
-    },
-
-    // 防抖操作
-    debounce(func, delay = 300) {
-      let timer = null;
-      return function (...args) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      };
     },
   },
 };

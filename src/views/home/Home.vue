@@ -58,6 +58,8 @@ import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
+import { itemListenerMixin } from "@/common/mixin";
+
 export default {
   name: "Home",
   components: {
@@ -91,6 +93,7 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
+  mixins: [itemListenerMixin],
   created() {
     // 组件创建完成就发送网络请求
     // 1.请求多个数据
@@ -101,14 +104,7 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {
-    // 1.监听item中图片加载完成
-    const refresh = this.debounce(this.$refs.scroll.refresh);
-    this.$bus.$on("itemImageLoad", () => {
-      // better-scroll 重新计算高度
-      refresh();
-    });
-  },
+  mounted() {},
   activated() {
     // 回来时，跳转到之前的位置
     this.$refs.scroll.scrollTo(0, this.saveY, 0);
@@ -118,6 +114,9 @@ export default {
   deactivated() {
     // 离开时，记录当前的位置
     this.saveY = this.$refs.scroll.getScrollY();
+
+    // 取消全局事件的监听
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
   methods: {
     /**
@@ -167,17 +166,6 @@ export default {
     swiperImageLoad() {
       // 获取tabControl的offsetTop
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
-    },
-
-    // 防抖操作
-    debounce(func, delay = 300) {
-      let timer = null;
-      return function (...args) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      };
     },
 
     /**

@@ -2,10 +2,22 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-09-04 11:57:46
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-04 11:59:23
+ * @LastEditTime: 2022-09-04 16:34:09
  * @FilePath: \super-mall\src\common\utils.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
+
+// 防抖操作
+export function debounce(func, delay = 300) {
+  let timer = null;
+  return function (...args) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
 // 时间戳转化
 export function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
