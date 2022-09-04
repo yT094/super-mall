@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-03 22:49:13
+ * @LastEditTime: 2022-09-04 12:24:52
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -14,6 +14,12 @@
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info :goods-info="goodsInfo" />
+      <!-- 尺码信息 -->
+      <detail-param-info :param-info="goodsParamsInfo" ref="params" />
+      <!-- 评论 -->
+      <detail-comment-info :comment-info="commentInfo" ref="comment" />
+      <!-- 推荐 -->
+      <goods-list :goods="recommends" ref="recommend" />
     </scroll>
   </div>
 </template>
@@ -24,11 +30,14 @@ import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
+import DetailParamInfo from "./childComps/DetailParamInfo.vue";
+import DetailCommentInfo from "./childComps/DetailCommentInfo";
+import GoodsList from "../../components/content/goods/GoodsList.vue";
 
 import Scroll from "components/common/scroll/Scroll";
 
-import { getDetailData } from "network/detail";
-import { Goods, Shop } from "../../network/detail";
+import { getDetailData, getRecommend } from "network/detail";
+import { Goods, GoodsParam, Shop } from "../../network/detail";
 
 export default {
   name: "Detail",
@@ -38,6 +47,9 @@ export default {
     DetailBaseInfo,
     DetailShopInfo,
     DetailGoodsInfo,
+    DetailParamInfo,
+    DetailCommentInfo,
+    GoodsList,
     Scroll,
   },
   data() {
@@ -47,7 +59,9 @@ export default {
       goods: {},
       shop: {},
       goodsInfo: {},
-      netData: {},
+      goodsParamsInfo: {},
+      commentInfo: {},
+      recommends: [],
     };
   },
   watch: {
@@ -67,9 +81,12 @@ export default {
   created() {
     // 1.拿到商品的iid
     this.iid = this.$route.params.iid;
-    console.log("Detail", this.iid);
+
     // 2.通过iid拿数据
     this.getDetailData();
+
+    // 3.获取推荐数据
+    this.getRecommend();
   },
   methods: {
     // 获取DetailData
@@ -91,12 +108,29 @@ export default {
         // 3.获取店铺信息
         this.shop = new Shop(data.shopInfo);
 
-        // 4.获取商品的详细信息
+        // 4.获取商品的详情信息
         this.goodsInfo = data.detailInfo;
 
-        console.log("goodsInfo:", this.goodsInfo);
+        // 5.获取商品的参数信息
+        this.goodsParamsInfo = new GoodsParam(
+          data.itemParams.info,
+          data.itemParams.rule
+        );
+
+        // 6.获取评论信息
+        if (data.rate.cRate !== 0) {
+          this.commentInfo = data.rate.list[0];
+        }
       });
     },
+
+    // 3.获取推荐数据
+    getRecommend() {
+      getRecommend().then((res) => {
+        this.recommends = res.data.list;
+      });
+    },
+
     // 防抖操作
     debounce(func, delay = 300) {
       let timer = null;

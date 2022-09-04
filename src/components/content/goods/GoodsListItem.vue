@@ -2,13 +2,13 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-02 09:51:14
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-05-22 20:54:42
+ * @LastEditTime: 2022-09-04 12:41:54
  * @FilePath: \super-mall\src\components\content\goods\GoodsListItem.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
   <div class="goods-item" @click="onItemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
+    <img :src="showImage" :key="showImage" alt="" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -26,6 +26,13 @@ export default {
       default() {
         return {};
       },
+    },
+  },
+  computed: {
+    showImage() {
+      return (
+        this.goodsItem.image || this.goodsItem.img || this.goodsItem.show.img
+      );
     },
   },
   methods: {
