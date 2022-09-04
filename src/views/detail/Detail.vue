@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-04 16:43:52
+ * @LastEditTime: 2022-09-04 18:08:07
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -13,7 +13,7 @@
       <detail-swiper :topImages="topImages" />
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
-      <detail-goods-info :goods-info="goodsInfo" />
+      <detail-goods-info :goods-info="goodsInfo" @imageLoad="onImageLoad" />
       <!-- 尺码信息 -->
       <detail-param-info :param-info="goodsParamsInfo" ref="params" />
       <!-- 评论 -->
@@ -67,9 +67,7 @@ export default {
   },
   watch: {
     goodsInfo: {
-      handler(newVal, oldVal) {
-        console.log("oldVal:", oldVal);
-        console.log("newVal:", newVal);
+      handler(newVal) {
         this.goodsInfo = newVal;
       },
       // 立即处理, 进入页面就触发
@@ -129,11 +127,16 @@ export default {
       });
     },
 
-    // 3.获取推荐数据
+    // 获取推荐数据
     getRecommend() {
       getRecommend().then((res) => {
         this.recommends = res.data.list;
       });
+    },
+
+    // 监听goodsItem 图片加载
+    onImageLoad() {
+      this.newRefresh();
     },
   },
 };

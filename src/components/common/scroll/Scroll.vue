@@ -1,3 +1,11 @@
+<!--
+ * @Author: ycs 1748780248@qq.com
+ * @Date: 2022-05-02 17:49:14
+ * @LastEditors: ycs 1748780248@qq.com
+ * @LastEditTime: 2022-09-04 18:07:35
+ * @FilePath: \super-mall\src\components\common\scroll\Scroll.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <template>
   <div class="wrapper" ref="wrapper">
     <div class="content">
@@ -32,15 +40,14 @@ export default {
       this.scroll && this.scroll.scrollTo(x, y, time);
     },
     refresh() {
-      // console.log('----'); // 测试打印了多少次
       this.scroll && this.scroll.refresh();
     },
     finishPullUp() {
       this.scroll && this.scroll.finishPullUp();
     },
     getScrollY() {
-      return this.scroll ? this.scroll.y : 0
-    }
+      return this.scroll ? this.scroll.y : 0;
+    },
   },
   mounted() {
     // 1.创建 BScroll 对象
@@ -63,5 +70,4 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

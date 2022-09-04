@@ -138,6 +138,7 @@ export default {
         default:
           break;
       }
+      // 将两个 tabControl 的 currentIndex 保持一致
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
