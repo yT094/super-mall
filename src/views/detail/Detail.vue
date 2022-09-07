@@ -2,18 +2,25 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-04 18:08:07
+ * @LastEditTime: 2022-09-07 14:03:31
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
   <div id="detail-root">
-    <detail-nav-bar class="detail-nav"></detail-nav-bar>
+    <detail-nav-bar
+      class="detail-nav"
+      @topTitleClick="onTopTitleClick"
+    ></detail-nav-bar>
     <scroll class="content" ref="scroll" :probe-type="3">
       <detail-swiper :topImages="topImages" />
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
-      <detail-goods-info :goods-info="goodsInfo" @imageLoad="onImageLoad" />
+      <detail-goods-info
+        :goods-info="goodsInfo"
+        @imageLoad="onImageLoad"
+        ref="goods"
+      />
       <!-- 尺码信息 -->
       <detail-param-info :param-info="goodsParamsInfo" ref="params" />
       <!-- 评论 -->
@@ -30,7 +37,7 @@ import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
-import DetailParamInfo from "./childComps/DetailParamInfo.vue";
+import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 import GoodsList from "../../components/content/goods/GoodsList.vue";
 
@@ -39,6 +46,7 @@ import Scroll from "components/common/scroll/Scroll";
 import { getDetailData, getRecommend } from "network/detail";
 import { Goods, GoodsParam, Shop } from "../../network/detail";
 import { itemListenerMixin } from "@/common/mixin";
+import { debounce } from "common/utils";
 
 export default {
   name: "Detail",
@@ -63,6 +71,8 @@ export default {
       goodsParamsInfo: {},
       commentInfo: {},
       recommends: [],
+      themeTopYs: [],
+      getThemeTopY: null,
     };
   },
   watch: {
@@ -86,6 +96,14 @@ export default {
 
     // 3.获取推荐数据
     this.getRecommend();
+
+    // 4.获取各主题的 TopY 值(对给 this.themeTopYs赋值的操作进行防抖)
+    this.getThemeTopY = debounce(() => {
+      this.themeTopYs.push(0);
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+    }, 100);
   },
   destroyed() {
     // 取消全局事件的监听
@@ -106,7 +124,6 @@ export default {
           data.columns,
           data.shopInfo.services
         );
-        // console.log("Goods:", this.goods);
 
         // 3.获取店铺信息
         this.shop = new Shop(data.shopInfo);
@@ -123,6 +140,7 @@ export default {
         // 6.获取评论信息
         if (data.rate.cRate !== 0) {
           this.commentInfo = data.rate.list[0];
+          console.log(" this.commentInfo", this.commentInfo);
         }
       });
     },
@@ -137,6 +155,12 @@ export default {
     // 监听goodsItem 图片加载
     onImageLoad() {
       this.newRefresh();
+      this.getThemeTopY();
+    },
+
+    // 顶部 item 的点击
+    onTopTitleClick(index) {
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 500);
     },
   },
 };

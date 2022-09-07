@@ -1,8 +1,9 @@
 <template>
-  <div
+  <!-- <div
     v-if="commentInfo !== null && commentInfo.images !== undefined"
     class="comment-info"
-  >
+  > -->
+  <div v-if="Object.keys(commentInfo).length !== 0" class="comment-info">
     <div class="info-header">
       <div class="header-title">用户评价</div>
       <div class="header-more">
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-import {formatDate} from '@/common/utils'
+import { formatDate } from "@/common/utils";
 export default {
   name: "DetailCommentInfo",
   props: {
@@ -46,10 +47,10 @@ export default {
   computed: {
     date() {
       // 1.将时间戳转化成Date对象
-      const date = new Date( this.commentInfo.created * 1000)
-      // 
-      return formatDate(date, 'yyyy-MM-dd')
-    }
+      const date = new Date(this.commentInfo.created * 1000);
+      //
+      return formatDate(date, "yyyy-MM-dd");
+    },
   },
 };
 </script>
