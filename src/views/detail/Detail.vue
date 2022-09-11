@@ -2,14 +2,19 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-11 09:25:02
+ * @LastEditTime: 2022-09-11 15:44:21
  * @FilePath: \super-mall\src\views\detail\detail.vue
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
--->
+ * @Description: 详情首页
+ -->
 <template>
   <div id="detail-root">
     <detail-nav-bar class="detail-nav" @topTitleClick="onTopTitleClick" />
-    <scroll class="content" ref="scroll" :probe-type="3">
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="onContentScroll"
+    >
       <detail-swiper :topImages="topImages" />
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
@@ -26,6 +31,10 @@
       <goods-list :goods="recommends" ref="recommend" />
     </scroll>
     <detail-bottom-nav></detail-bottom-nav>
+
+    <transition name="back-top">
+      <back-top v-show="isShowBackTop" @click.native="onBackClick" />
+    </transition>
   </div>
 </template>
 
@@ -45,7 +54,7 @@ import Scroll from "components/common/scroll/Scroll";
 
 import { getDetailData, getRecommend } from "network/detail";
 import { Goods, GoodsParam, Shop } from "../../network/detail";
-import { itemListenerMixin } from "@/common/mixin";
+import { itemListenerMixin, backTopMixin } from "@/common/mixin";
 import { debounce } from "common/utils";
 
 export default {
@@ -87,7 +96,7 @@ export default {
       deep: true,
     },
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 1.拿到商品的iid
     this.iid = this.$route.params.iid;
@@ -163,6 +172,13 @@ export default {
     onTopTitleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 500);
     },
+
+    // 监听内容滚动的位置
+    onContentScroll(position) {
+      // 决定 BackTop 是否显示
+      const positionY = -position.y;
+      this.isShowBackTop = positionY > 1000;
+    },
   },
 };
 </script>
@@ -187,6 +203,21 @@ export default {
     // 内容的滚动区域
     height: calc(100% - 44px);
     background-color: #fff;
+  }
+
+  // 给回到顶部按钮做了一个过渡效果, transition 是一个内部组件
+  .back-top-enter,
+  .back-top-leave-to {
+    // transform 属性允许你旋转，缩放，倾斜或平移给定元素
+    transform: translateX(1rem);
+    // opacity 属性指定了一个元素的不透明度: 0 完全透明
+    opacity: 0;
+  }
+  .back-top-enter-active {
+    transition: all 1s;
+  }
+  .back-top-leave-active {
+    transition: all 1s;
   }
 }
 </style>

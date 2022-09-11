@@ -41,7 +41,9 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <back-top @click.native="onBackClick" v-show="isShowBackTop" />
+    <transition name="back-top">
+      <back-top v-show="isShowBackTop" @click.native="onBackClick" />
+    </transition>
   </div>
 </template>
 
@@ -58,7 +60,7 @@ import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
-import { itemListenerMixin } from "@/common/mixin";
+import { itemListenerMixin, backTopMixin } from "@/common/mixin";
 
 export default {
   name: "Home",
@@ -93,7 +95,7 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
-  mixins: [itemListenerMixin],
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 组件创建完成就发送网络请求
     // 1.请求多个数据
@@ -221,6 +223,21 @@ export default {
     bottom: 49px;
     left: 0;
     right: 0;
+  }
+
+  // 给回到顶部按钮做了一个过渡效果, transition 是一个内部组件
+  .back-top-enter,
+  .back-top-leave-to {
+    // transform 属性允许你旋转，缩放，倾斜或平移给定元素
+    transform: translateX(1rem);
+    // opacity 属性指定了一个元素的不透明度: 0 完全透明
+    opacity: 0;
+  }
+  .back-top-enter-active {
+    transition: all 1s;
+  }
+  .back-top-leave-active {
+    transition: all 1s;
   }
 }
 </style>
