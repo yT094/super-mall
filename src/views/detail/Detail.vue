@@ -2,7 +2,7 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-11 15:44:21
+ * @LastEditTime: 2022-09-11 18:52:00
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 详情首页
  -->
@@ -30,7 +30,7 @@
       <!-- 推荐 -->
       <goods-list :goods="recommends" ref="recommend" />
     </scroll>
-    <detail-bottom-nav></detail-bottom-nav>
+    <detail-bottom-nav @addCart="onAddCart" />
 
     <transition name="back-top">
       <back-top v-show="isShowBackTop" @click.native="onBackClick" />
@@ -178,6 +178,22 @@ export default {
       // 决定 BackTop 是否显示
       const positionY = -position.y;
       this.isShowBackTop = positionY > 1000;
+    },
+
+    // 监听 添加到购物车的点击
+    onAddCart() {
+      console.log("onAddCart");
+      // 1.获取购物车需要展示的数据
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods["title"];
+      product.desc = this.goods["desc"];
+      product.price = this.goods["realPrice"];
+      product.iid = this.iid;
+
+      // 2.将商品添加到购物车里
+      // this.$store.cartList.push(product); // 此方法不可取, 要通过 mutation
+      this.$store.dispatch("addCart", product);
     },
   },
 };
