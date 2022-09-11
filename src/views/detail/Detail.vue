@@ -2,16 +2,13 @@
  * @Author: ycs 1748780248@qq.com
  * @Date: 2022-05-14 10:05:37
  * @LastEditors: ycs 1748780248@qq.com
- * @LastEditTime: 2022-09-07 14:03:31
+ * @LastEditTime: 2022-09-11 09:25:02
  * @FilePath: \super-mall\src\views\detail\detail.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 <template>
   <div id="detail-root">
-    <detail-nav-bar
-      class="detail-nav"
-      @topTitleClick="onTopTitleClick"
-    ></detail-nav-bar>
+    <detail-nav-bar class="detail-nav" @topTitleClick="onTopTitleClick" />
     <scroll class="content" ref="scroll" :probe-type="3">
       <detail-swiper :topImages="topImages" />
       <detail-base-info :goods="goods" />
@@ -28,6 +25,7 @@
       <!-- 推荐 -->
       <goods-list :goods="recommends" ref="recommend" />
     </scroll>
+    <detail-bottom-nav></detail-bottom-nav>
   </div>
 </template>
 
@@ -39,6 +37,8 @@ import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
+import DetailBottomNav from "./childComps/DetailBottomNav";
+
 import GoodsList from "../../components/content/goods/GoodsList.vue";
 
 import Scroll from "components/common/scroll/Scroll";
@@ -58,6 +58,7 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
+    DetailBottomNav,
     GoodsList,
     Scroll,
   },
